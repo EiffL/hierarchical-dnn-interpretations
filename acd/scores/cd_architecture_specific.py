@@ -4,7 +4,6 @@ from copy import deepcopy
 import numpy as np
 from scipy.special import expit as sigmoid
 from acd.scores.cd_propagate import *
-from acd.scores.cd import cd_generic
 
 def cd_propagate_resnet(rel, irrel, model):
     # each BasicBlock passes its input through to its output (might need to downsample)
