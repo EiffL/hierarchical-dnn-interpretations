@@ -1,12 +1,12 @@
 import sys
 import numpy as np
-from ..util import tiling_2d as tiling
-from ..scores.cd import cd, cd_text
+from acd.util import tiling_2d as tiling
+from acd.scores.cd import cd, cd_text
 from skimage import measure  # for connected components
 from math import ceil
 from scipy.signal import convolve2d
 from copy import deepcopy
-from ..scores import score_funcs
+from acd.scores import score_funcs
 
 
 # score doesn't have to just be prediction for label
@@ -79,7 +79,7 @@ def establish_correspondence(seg1, seg2):
             seg_out[seg] = min(matches)
             remaining.remove(min(matches))
 
-    # assign new segs    
+    # assign new segs
     while new_counter < 0:
         seg_out[seg_out == new_counter] = min(remaining)
         remaining.remove(min(remaining))

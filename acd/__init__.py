@@ -1,5 +1,5 @@
-from .scores.cd import *
-from .scores.cd_propagate import *
-from .scores.score_funcs import *
-from .agglomeration import agg_1d, agg_2d
-from .util import *
+from acd.scores.cd import *
+from acd.scores.cd_propagate import *
+from acd.scores.score_funcs import *
+from acd.agglomeration import agg_1d, agg_2d
+from acd.util import *

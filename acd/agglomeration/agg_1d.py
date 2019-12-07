@@ -1,8 +1,8 @@
 import numpy as np
-from ..util import tiling_1d as tiling
+from acd.util import tiling_1d as tiling
 import torch
 from skimage import measure
-from ..scores import score_funcs
+from acd.scores import score_funcs
 
 
 # threshold scores at a specific percentile

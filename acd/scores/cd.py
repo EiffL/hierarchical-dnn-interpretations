@@ -3,12 +3,12 @@ import torch.nn.functional as F
 from copy import deepcopy
 import numpy as np
 from scipy.special import expit as sigmoid
-from .cd_propagate import *
-from .cd_architecture_specific import *
+from acd.scores.cd_propagate import *
+from acd.scores.cd_architecture_specific import *
 
 def cd(im_torch: torch.Tensor, model, mask=None, model_type=None, device='cuda', transform=None):
     '''Get contextual decomposition scores for blob
-    
+
     Params
     ------
     mask: array_like (values in {0, 1})
@@ -25,19 +25,19 @@ def cd(im_torch: torch.Tensor, model, mask=None, model_type=None, device='cuda',
     transform: function
         transform should be a function which transforms the original image
         only used if mask is not passed
-        
+
     Returns
     -------
     relevant: torch.Tensor
         class-wise scores for relevant mask
     irrelevant: torch.Tensor
-        class-wise scores for everything but the relevant mask 
+        class-wise scores for everything but the relevant mask
     '''
-    
+
     # set up model
     model.eval()
     im_torch = im_torch.to(device)
-    
+
     # set up masks
     if not mask is None:
         mask = torch.FloatTensor(mask).to(device)
@@ -57,7 +57,7 @@ def cd(im_torch: torch.Tensor, model, mask=None, model_type=None, device='cuda',
         return cd_propagate_mnist(relevant, irrelevant, model)
     elif model_type == 'resnet18':
         return cd_propagate_resnet(relevant, irrelevant, model)
-    
+
     mods = list(model.modules())
     relevant, irrelevant = cd_generic(mods, relevant, irrelevant)
     return relevant, irrelevant
@@ -84,7 +84,7 @@ def cd_generic(mods, relevant, irrelevant):
 
 def cd_text(batch, model, start, stop, return_irrel_scores=False):
     '''Get contextual decomposition scores for substring of a text sequence
-    
+
     Params
     ------
         batch: torchtext batch
@@ -172,5 +172,5 @@ def cd_text(batch, model, start, stop, return_irrel_scores=False):
 
     if return_irrel_scores:
         return scores, irrel_scores
-    
+
     return scores

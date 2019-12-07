@@ -3,8 +3,8 @@ import torch.nn.functional as F
 from copy import deepcopy
 import numpy as np
 from scipy.special import expit as sigmoid
-from .cd_propagate import *
-
+from acd.scores.cd_propagate import *
+from acd.scores.cd import cd_generic
 
 def cd_propagate_resnet(rel, irrel, model):
     # each BasicBlock passes its input through to its output (might need to downsample)
@@ -18,7 +18,7 @@ def cd_propagate_resnet(rel, irrel, model):
     x = self.maxpool(x)
 
     # mods[5, 18, 34, 50]
-    x = self.layer1(x)  
+    x = self.layer1(x)
     x = self.layer2(x)
     x = self.layer3(x)
     x = self.layer4(x)
@@ -27,7 +27,7 @@ def cd_propagate_resnet(rel, irrel, model):
     x = torch.flatten(x, 1)
     x = self.fc(x)
     '''
-    
+
     rel, irrel = cd_generic(mods[1:5], rel, irrel)
 
     lay_nums = [5, 18, 34, 50]
@@ -35,28 +35,28 @@ def cd_propagate_resnet(rel, irrel, model):
 #         print(mods[lay_num])
         for basic_block in mods[lay_num]:
 #             print('in shape', rel.shape, irrel.shape)
-#             print(basic_block)            
+#             print(basic_block)
             rel, irrel = propagate_basic_block(rel, irrel, basic_block)
 #             print('out shape', rel.shape, irrel.shape)
-    
+
     # this is written super hacky
 #     print('before avgpool')
     rel = rel.mean(axis=-1)
     irrel = irrel.mean(axis=-1)
-    
+
     rel = rel.mean(axis=-1)
     irrel = irrel.mean(axis=-1)
-    
+
 #     rel, irrel = cd_generic(mods[-2:-1], rel, irrel)
 #     print('after avgpool')
-    
-    
-    
+
+
+
 #     print(rel.shape)
 #     rel = rel.flatten()
 #     irrel = irrel.flatten()
     rel, irrel = cd_generic(mods[-1:], rel, irrel)
-    
+
 #     print(rel.shape)
     return rel, irrel
 

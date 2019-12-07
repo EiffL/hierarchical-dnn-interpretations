@@ -3,9 +3,9 @@ import numpy as np
 import torch.nn.functional as F
 import torch.nn as nn
 import sys
-from ..util.conv2dnp import conv2dnp
+from acd.util.conv2dnp import conv2dnp
 import copy
-from .cd import cd, cd_text
+from acd.scores.cd import cd, cd_text
 from tqdm import tqdm
 
 
@@ -26,14 +26,14 @@ def gradient_times_input_scores(im, ind, model, device='cuda'):
 def ig_scores_2d(model, im_torch, num_classes=10, im_size=28, sweep_dim=1, ind=None, device='cuda'):
     '''Compute IG scores
     '''
-    
+
     for p in model.parameters():
         if p.grad is not None:
             p.grad.data.zero_()
-            
+
     # What class to produce explanations for
     output = np.zeros((im_size * im_size // (sweep_dim * sweep_dim), num_classes))
-    
+
     if ind is None:
         ind = range(num_classes)
     for class_to_explain in ind:
@@ -45,11 +45,11 @@ def ig_scores_2d(model, im_torch, num_classes=10, im_size=28, sweep_dim=1, ind=N
 
         baseline = torch.zeros(im_torch.shape).to(device)
 
-        input_vecs = torch.empty((M, baseline.shape[1],  baseline.shape[2], baseline.shape[3]), 
+        input_vecs = torch.empty((M, baseline.shape[1],  baseline.shape[2], baseline.shape[3]),
                                   dtype=torch.float32,
                                   device=device, requires_grad=False)
         '''
-        input_vecs = torch.Tensor(M, baseline.size(1), 
+        input_vecs = torch.Tensor(M, baseline.size(1),
                                   baseline.size(2), baseline.size(3)).to(device)
         input_vecs.requires_grad = True
         '''
